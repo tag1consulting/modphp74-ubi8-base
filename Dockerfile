@@ -24,9 +24,11 @@ RUN pushd /tmp && \
     ./configure --prefix /usr/local && \
     make install && \
     popd && \
-    rm -rf  ImageMagick* && popd
+    rm -rf  ImageMagick* && \
+    popd
 
-RUN dnf -y install php-pear php-devel php-pecl-zip php-xmlrpc && \
+RUN dnf upgrade -y && \
+    dnf -y install php-pear php-devel php-pecl-zip php-xmlrpc && \
     pecl install imagick && \
     echo "extension=imagick.so" >> /etc/php.d/30-imagick.ini
 
