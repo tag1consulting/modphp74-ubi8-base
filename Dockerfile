@@ -16,8 +16,8 @@ ENV DOCUMENTROOT "/"
 
 USER root
 
+RUN echo "enabled=0" >> /etc/yum/pluginconf.d/subscription-manager.conf
 COPY build/ImageMagick-7.0.11-6.tar.gz /tmp/.
-
 RUN pushd /tmp && \
     tar -xzf ImageMagick-7.0.11-6.tar.gz && \
     pushd ImageMagick-7.0.11-6 && \
@@ -27,8 +27,7 @@ RUN pushd /tmp && \
     rm -rf  ImageMagick* && \
     popd
 
-RUN dnf upgrade -y && \
-    dnf -y install php-pear php-devel php-pecl-zip php-xmlrpc && \
+RUN dnf -y install php-pear php-devel php-pecl-zip php-xmlrpc && \
     pecl install imagick && \
     echo "extension=imagick.so" >> /etc/php.d/30-imagick.ini
 
@@ -44,6 +43,8 @@ RUN { \
 RUN { \
     echo 'SetEnvIf X-Forwarded-Proto "https" HTTPS=on'; \
   } > /etc/httpd/conf.d/remote_ssl.conf
+
+RUN rpm-file-permissions
 
 USER 1001
 
