@@ -27,9 +27,19 @@ RUN pushd /tmp && \
     rm -rf  ImageMagick* && \
     popd
 
-RUN dnf -y install php-pear php-devel php-pecl-zip php-xmlrpc && \
+RUN dnf -y upgrade && \
+    dnf -y install php-pear \
+    php-devel \
+    php-pecl-zip \
+    php-xmlrpc && \
     pecl install imagick && \
-    echo "extension=imagick.so" >> /etc/php.d/30-imagick.ini
+    echo "extension=imagick.so" >> /etc/php.d/30-imagick.ini && \
+    chown -R 1001:0 /run/httpd /etc/httpd/run /var/log/httpd
+
+RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
+  && curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
+  && php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
+  && php /tmp/composer-setup.php --filename composer --install-dir /usr/local/bin
 
 #Read XFF headers, note this is insecure if you are not sanitizing
 #XFF in front of the container
