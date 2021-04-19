@@ -9,7 +9,6 @@ LABEL name="php-base-ubi-modphp74" \
 
 ENV OPCACHE_MEMORY_CONSUMPTION 128
 ENV OPCACHE_REVALIDATE_FREQ 60
-ENV HTTPD_MAX_REQUEST_WORKERS 150
 ENV PHP_MEMORY_LIMIT 256M
 ENV HTTPD_MAX_CONNECTIONS_PER_CHILD 2000
 ENV DOCUMENTROOT "/"
@@ -22,7 +21,7 @@ RUN pushd /tmp && \
     tar -xzf ImageMagick-7.0.11-6.tar.gz && \
     pushd ImageMagick-7.0.11-6 && \
     ./configure --prefix /usr/local && \
-    make install && \
+    make -j `nproc` install && \
     popd && \
     rm -rf  ImageMagick* && \
     popd
