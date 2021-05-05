@@ -31,7 +31,7 @@ RUN dnf -y upgrade && \
     php-devel \
     php-pecl-zip \
     php-xmlrpc && \
-    pecl install imagick && \
+    echo '' | pecl install imagick && \
     echo "extension=imagick.so" >> /etc/php.d/30-imagick.ini && \
     chown -R 1001:0 /run/httpd /etc/httpd/run /var/log/httpd
 
