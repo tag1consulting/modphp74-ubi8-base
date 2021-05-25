@@ -32,3 +32,16 @@ jobs:
          push: true
          tags: |
            tag1consulting/modphp74-ubi8-base:latest
+
+ - name: Push To quay.io
+      id: push-to-quay
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: modphp74-ubi8-base
+        tags: latest ${{ github.ref }}
+        registry: quay.io/tag1consulting
+        username: tag1consulting+github
+        password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+
+    - name: Print image url
+      run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
