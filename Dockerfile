@@ -26,8 +26,7 @@ RUN pushd /tmp && \
     rm -rf  ImageMagick* && \
     popd
 
-RUN dnf -y upgrade && \
-    dnf -y install php-pear \
+RUN dnf -y install php-pear \
     php-devel \
     php-pecl-zip \
     php-xmlrpc && \
