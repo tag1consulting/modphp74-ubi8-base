@@ -39,7 +39,7 @@ jobs:
        uses: redhat-actions/push-to-registry@v2
        with:
          image: modphp74-ubi8-base
-         tags: latest ${{ github.ref }}
+         tags: latest
          registry: quay.io/tag1consulting
          username: tag1consulting+github
          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
