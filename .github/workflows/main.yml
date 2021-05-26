@@ -17,11 +17,13 @@ jobs:
        name: Set up QEMU
        uses: docker/setup-qemu-action@v1
      -
-       name: Login to DockerHub
+       name: Login to Quay.io
        uses: docker/login-action@v1
        with:
-         username: ${{ secrets.DOCKERHUB_USERNAME }}
-         password: ${{ secrets.DOCKERHUB_TOKEN }}
+	 registry: quay.io
+         username: tag1consulting+github
+         password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+
      -
        name: Build and push
        uses: docker/build-push-action@v2
@@ -31,15 +33,4 @@ jobs:
          platforms: linux/amd64,linux/arm64
          push: true
          tags: |
-           tag1consulting/modphp74-ubi8-base:latest
-
-     - 
-       name: Push To quay.io
-       id: push-to-quay
-       uses: redhat-actions/push-to-registry@v2
-       with:
-         image: tag1consulting/modphp74-ubi8-base:latest
-         tags: latest
-         registry: quay.io/tag1consulting
-         username: tag1consulting+github
-         password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+           quay.io/tag1consulting/modphp74-ubi8-base:latest
