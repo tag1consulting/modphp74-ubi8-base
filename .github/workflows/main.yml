@@ -32,7 +32,7 @@ jobs:
        id: meta
        uses: docker/metadata-action@v3
        with:
-         images: tag1consulting/modphp74-ubi8-base
+         images: quay.io/tag1consulting/modphp74-ubi8-base
          
      -
        name: Build and push
@@ -42,5 +42,5 @@ jobs:
          file: Dockerfile
          platforms: linux/amd64,linux/arm64
          push: true
-         tags: |
-           quay.io/tag1consulting/modphp74-ubi8-base:latest
+         tags: ${{ steps.meta.outputs.tags }}
+         labels: ${{ steps.meta.outputs.labels }}
