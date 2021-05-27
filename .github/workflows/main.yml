@@ -1,8 +1,11 @@
 name: ci
  
 on:
- push:
-   branches: main
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
  
 jobs:
  main:
@@ -24,6 +27,13 @@ jobs:
          username: tag1consulting+github
          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
 
+     -
+       name: Docker meta
+       id: meta
+       uses: docker/metadata-action@v3
+       with:
+         images: tag1consulting/modphp74-ubi8-base
+         
      -
        name: Build and push
        uses: docker/build-push-action@v2
