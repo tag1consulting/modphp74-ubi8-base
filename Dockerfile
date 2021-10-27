@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/php-74:1-35
+FROM registry.access.redhat.com/ubi8/php-74:1-38.1634036299
 
 LABEL name="php-base-ubi-modphp74" \
       maintainer="support@tag1consulting.com" \
