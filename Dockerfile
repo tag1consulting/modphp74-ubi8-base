@@ -1,11 +1,11 @@
-FROM registry.access.redhat.com/ubi8/php-74:1-47
+FROM registry.access.redhat.com/ubi8/php-74:1
 
 LABEL name="php-base-ubi-modphp74" \
       maintainer="support@tag1consulting.com" \
       vendor="Tag1 Consulting" \
       version="1.0" \
       release="1" \
-      summary="Simple base docker image for running PHP sites, Drupal oriented" 
+      summary="Simple base docker image for running PHP sites, Drupal oriented"
 
 ENV OPCACHE_MEMORY_CONSUMPTION 128
 ENV OPCACHE_REVALIDATE_FREQ 60
