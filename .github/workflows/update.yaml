@@ -1,8 +1,11 @@
 name: image-update
 
 on:
-  schedule:
-    - cron: "45 * * * *"
+  push:
+    branches:
+      - 'main'
+    tags:
+      - 'v*'
 
 jobs:
  update:
