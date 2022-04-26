@@ -10,13 +10,13 @@ jobs:
    steps:
      -  name: Check out the repo
         uses: actions/checkout@v2
-      -
-        name: Check if update available
-        id: check
-        uses: twiddler/is-my-docker-parent-image-out-of-date@v1
-        with:
-          base-image: registry.access.redhat.com/ubi8/php-74:latest
-          image: quay.io/tag1consulting/modphp74-ubi8-base:latest
+     -
+       name: Check if update available
+       id: check
+       uses: twiddler/is-my-docker-parent-image-out-of-date@v1
+       with:
+         base-image: registry.access.redhat.com/ubi8/php-74:latest
+         image: quay.io/tag1consulting/modphp74-ubi8-base:latest
      -
        name: Setup Docker Buildx
        uses: docker/setup-buildx-action@v1
