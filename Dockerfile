@@ -39,11 +39,15 @@ LABEL name="php74-ubi-minimal-base" \
       release="1" \
       summary="Simple base docker image for running PHP sites, Drupal oriented"
 
+ENV OPCACHE_MAX_FILES 4000
 ENV OPCACHE_MEMORY_CONSUMPTION 128
 ENV OPCACHE_REVALIDATE_FREQ 60
 ENV PHP_MEMORY_LIMIT 256M
 ENV HTTPD_MAX_CONNECTIONS_PER_CHILD 2000
-ENV DOCUMENTROOT "/"
+ENV HTTPD_MAX_KEEPALIVE_REQUESTS 100
+ENV HTTPD_MAX_REQUEST_WORKERS 256
+ENV DOCUMENTROOT "/html"
+ENV APP_DATA "/var/www"
 
 USER root
 
@@ -55,7 +59,8 @@ COPY --from=builder /usr/lib64/php/modules /usr/lib64/php/modules
 
 # Reinstall timezone data (required by php runtime)
 # (ubi-minimal has tzdata, but removed /usr/share/zoneinfo to save space.)
-RUN microdnf reinstall tzdata
+RUN microdnf upgrade && \
+    microdnf reinstall tzdata
 
 # Install php 7.4 and httpd 2.4
 RUN microdnf module reset php && \
@@ -64,7 +69,7 @@ RUN microdnf module reset php && \
     microdnf install php \
     httpd
 
-RUN chown -R 1001:0 /run/httpd /etc/httpd/run /var/log/httpd
+RUN chown -R apache:0 /run/httpd /etc/httpd/run /var/log/httpd
 
 #Read XFF headers, note this is insecure if you are not sanitizing
 #XFF in front of the container
@@ -79,4 +84,29 @@ RUN { \
     echo 'SetEnvIf X-Forwarded-Proto "https" HTTPS=on'; \
   } > /etc/httpd/conf.d/remote_ssl.conf
 
-USER 1001
+# Log to stdout
+RUN { \
+    echo 'ErrorLog "|/usr/bin/cat"'; \
+    echo '<IfModule log_config_module>'; \
+    echo '  CustomLog "|/usr/bin/cat" combined'; \
+    echo '</IfModule>'; \
+  } > /etc/httpd/conf.d/00-logging.conf
+
+# Ensure we can run as non-root user
+RUN sed -i "s/^Listen 80/Listen 0.0.0.0:8080/" /etc/httpd/conf/httpd.conf
+
+# Entrypoint script modifies configuration based on enviornment variables.
+# Add root group to apache for access to configuration.
+# Enable write permissions on required files/directories.
+RUN usermod -a -G root apache && \
+    chmod -R g+w /etc/httpd/ && \
+    chmod g+w /etc/php.d && \
+    chmod g+w /etc/php.ini
+
+COPY ./entrypoint.sh /usr/local
+RUN chown apache:0 /usr/local/entrypoint.sh
+
+USER apache
+
+
+ENTRYPOINT ["/usr/local/entrypoint.sh"]
